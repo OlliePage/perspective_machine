@@ -106,9 +106,9 @@ uk_population_editions
 ##### fetch the dimensions that this dataset has to build the rest of the api.
 ##### We use the code list for this, a separate service
 
-# %%
-
-uk_population_code_list = post(f'/code-lists/{dataset_id}', is_ok=True)
+# # %%
+#
+# uk_population_code_list = post(f'/code-lists/{dataset_id}', is_ok=True)
 
 # %%
 
@@ -198,3 +198,62 @@ x, y = zip(*data_sorted)
 fig, ax = plt.subplots()
 ax.bar(x, height=y)
 ax.set_title('Population Estimates for UK, Wales, etc by age, 2017')
+ax.set_xlabel('Age (years)')
+ax.set_ylabel('Amount of people')
+plt.show()
+
+# %% md
+
+# Create a chart from Population Estimates for UK, Wales, etc.
+#
+# * dataset
+# * edition
+# * version
+# * time
+# * aggregate
+# * geography
+# * dimension
+#
+# code: mid-year-pop-est
+# %%
+
+dataset_id = 'index-private-housing-rental-prices'
+dataset = post(f'/datasets/{dataset_id}', is_ok=True)
+list(dataset.keys())
+
+# %%
+dataset_latest_version = dataset['links']['latest_version']['id']
+dataset_latest_version # 20
+
+# %%
+
+dataset_editions = post(f'/datasets/{dataset_id}/editions/time-series/versions/{dataset_latest_version}',
+                              is_ok=True)
+dataset_editions
+
+
+# %%
+dataset_dimensions = post(f'/datasets/{dataset_id}/editions/time-series/versions/{dataset_latest_version}/dimensions',
+                  is_ok=True)
+# %%
+# dataset_dimensions
+# print(dataset_dimensions['items'][0]['links']['code_list']['id'])
+code_list = []
+for i, v in enumerate(dataset_dimensions['items']):
+    code_list.append(dataset_dimensions['items'][i]['links']['code_list']['id'])
+
+print(code_list)
+# ['housing-rental-prices-variable', 'mmm-yy', 'admin-geography']
+# %%
+dimension = 'housing-rental-prices-variable'
+post(f'/datasets/{dataset_id}/editions/time-series/versions/{dataset_latest_version}/dimensions/{dimension}',
+    is_ok=True)
+# no options
+
+# %%
+post(f'/datasets/{dataset_id}'
+                          f'/editions/time-series'
+                          f'/versions/25/'
+                          f'observations?'
+                          f'time=mar-08&'
+                          f'admin-geography=K02000001&', is_ok=True)
