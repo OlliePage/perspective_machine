@@ -1,7 +1,9 @@
+from datetime import datetime
+
 import pandas as pd
 import requests
 import json
-import matplotlib.plyplot as plt
+import matplotlib.pyplot as plt
 
 # be able to see dataframe outputs in console
 from IPython.core.display import display
@@ -9,11 +11,6 @@ from IPython.core.display import display
 desired_width = 320
 pd.set_option('display.width', desired_width)
 pd.options.display.max_columns = 100
-
-
-# datasetId = 'cpih01'
-# edition = 'time-series'
-# version = '6'
 
 payload = {'time': 'Oct-11',
  'geography': 'K02000001',
@@ -79,14 +76,22 @@ payload = {
 }
 
 observations = get_observations('index-private-housing-rental-prices', 'time-series', '20', payload=payload)
-observations.sort(key=lambda tup: tup[0]) # sorts in place
+observations.sort(key = lambda date: datetime.strptime(date[0], '%b-%y'))
+
 print(observations)
 
 x, y = zip(*observations)
-
+# %%
 fig, ax = plt.subplots()
-ax.bar(x, height=y)
+ax.bar(x[-60:], height=y[-60:])
 ax.set_title('Index of Private Housing Rental Prices')
 ax.set_xlabel('Time')
 ax.set_ylabel('')
+plt.xticks(rotation=90)
 plt.show()
+# %%
+
+
+>>> import datetime
+>>> datetime.date*.isocalendar()[1]
+24
