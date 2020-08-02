@@ -5,8 +5,10 @@ import requests
 import json
 import matplotlib.pyplot as plt
 
+import pypickle
+
 # be able to see dataframe outputs in console
-from IPython.core.display import display
+# from IPython.core.display import display
 
 desired_width = 320
 pd.set_option('display.width', desired_width)
@@ -78,8 +80,14 @@ payload = {
 observations = get_observations('index-private-housing-rental-prices', 'time-series', '20', payload=payload)
 observations.sort(key = lambda date: datetime.strptime(date[0], '%b-%y'))
 
-print(observations)
+# print(observations)
+# %%
 
+pypickle.save('./observations.pkl',observations)
+# %%
+with open ('observations', wb) as f:
+    pkl.dump(observation, f)
+# %%
 x, y = zip(*observations)
 # %%
 fig, ax = plt.subplots()
@@ -92,6 +100,3 @@ plt.show()
 # %%
 
 
->>> import datetime
->>> datetime.date*.isocalendar()[1]
-24
