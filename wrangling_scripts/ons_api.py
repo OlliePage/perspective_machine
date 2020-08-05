@@ -1,10 +1,8 @@
 from datetime import datetime
-
 import pandas as pd
 import requests
 import json
 import matplotlib.pyplot as plt
-
 import pypickle
 
 # be able to see dataframe outputs in console
@@ -13,11 +11,6 @@ import pypickle
 desired_width = 320
 pd.set_option('display.width', desired_width)
 pd.options.display.max_columns = 100
-
-payload = {'time': 'Oct-11',
- 'geography': 'K02000001',
-'aggregate': 'cpih1dim1A0'}
-
 
 def get_editions(dataset_id: str, print_text=False) -> list:
     r = requests.get(f'https://api.beta.ons.gov.uk/v1/datasets/{dataset_id}/editions')
@@ -71,32 +64,33 @@ def get_observations(dataset_id: str, edition: str, version: str, payload: dict)
 
     return list(zip(time_axis, observation_values))
 
-payload = {
-    'geography':'E12000007',
-    'variable': 'index',
-    'time': '*'
-}
+# payload = {
+#     'geography':'E12000007',
+#     'variable': 'index',
+#     'time': '*'
+# }
 
-observations = get_observations('index-private-housing-rental-prices', 'time-series', '20', payload=payload)
-observations.sort(key = lambda date: datetime.strptime(date[0], '%b-%y'))
-
-# print(observations)
+# observations = get_observations('index-private-housing-rental-prices', 'time-series', '20', payload=payload)
+# observations.sort(key = lambda date: datetime.strptime(date[0], '%b-%y'))
+#
+# # print(observations)
+# # %%
+#
+# pypickle.save('./observations.pkl',observations)
+# # %%
+# with open ('observations', wb) as f:
+#     pkl.dump(observation, f)
+# # %%
+# x, y = zip(*observations)
+# # %%
+# fig, ax = plt.subplots()
+# ax.bar(x[-60:], height=y[-60:])
+# ax.set_title('Index of Private Housing Rental Prices')
+# ax.set_xlabel('Time')
+# ax.set_ylabel('')
+# plt.xticks(rotation=90)
+# plt.show()
 # %%
 
-pypickle.save('./observations.pkl',observations)
-# %%
-with open ('observations', wb) as f:
-    pkl.dump(observation, f)
-# %%
-x, y = zip(*observations)
-# %%
-fig, ax = plt.subplots()
-ax.bar(x[-60:], height=y[-60:])
-ax.set_title('Index of Private Housing Rental Prices')
-ax.set_xlabel('Time')
-ax.set_ylabel('')
-plt.xticks(rotation=90)
-plt.show()
-# %%
 
 
